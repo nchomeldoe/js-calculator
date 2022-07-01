@@ -74,9 +74,6 @@ const performCalculation = (xDomElementContent, yDomElementContent) => {
     case "^":
       return Math.pow(xValue, yValue);
       break;
-    // case "√":
-    //   return Math.pow(yValue, 1 / xValue);
-    //   break;
   }
 };
 
@@ -233,8 +230,6 @@ numbers.forEach((number) => {
     number.addEventListener("click", handleNum);
   }
 });
-
-// number.addEventListener("click", handleNum));
 
 point.addEventListener("click", handlePoint);
 
