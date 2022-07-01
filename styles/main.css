@@ -118,19 +118,27 @@
   text-align: right;
   margin-left: 1.2rem;
   overflow-x: scroll;
+  white-space: nowrap;
   scrollbar-width: none;
 }
 .outer-container .inner-container .header .calculation__x-container::-webkit-scrollbar {
   display: none;
 }
+.outer-container .inner-container .header .calculation__x-container p {
+  max-height: 2rem;
+}
 .outer-container .inner-container .header .calculation__y-container {
   margin-right: 1.5rem;
   text-align: left;
   overflow-x: scroll;
+  white-space: nowrap;
   scrollbar-width: none;
 }
 .outer-container .inner-container .header .calculation__y-container::-webkit-scrollbar {
   display: none;
+}
+.outer-container .inner-container .header .calculation__y-container p {
+  max-height: 1rem;
 }
 .outer-container .inner-container .header .input-output {
   text-align: right;

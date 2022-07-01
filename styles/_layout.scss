@@ -46,18 +46,26 @@
           text-align: right;
           margin-left: 1.2rem;
           overflow-x: scroll;
+          white-space: nowrap;
           scrollbar-width: none;
           &::-webkit-scrollbar {
             display: none;
+          }
+          p {
+            max-height: 2rem;
           }
         }
         &__y-container {
           margin-right: 1.5rem;
           text-align: left;
           overflow-x: scroll;
+          white-space: nowrap;
           scrollbar-width: none;
           &::-webkit-scrollbar {
             display: none;
+          }
+          p {
+            max-height: 1rem;
           }
         }
       }
