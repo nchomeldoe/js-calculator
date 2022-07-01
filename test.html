@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="./styles/main.css">
+</head>
+
+<body class=outer-container>
+  <container class=inner-container>
+    <header class="header">
+      <section class="secondary-display">
+        <p class="secondary-display__value" id="sd"></p>
+      </section>
+
+      <section class="primary-display">
+        <p class="primary-display__value" id="pd"></p>
+      </section>
+    </header>
+
+    <main class="main">
+      <button class="main__button main__button--primary">1</button>
+
+      <button class="main__button main__button--primary">2</button>
+
+      <button class="main__button main__button--primary">3</button>
+
+      <button class="main__button main__button--primary">4</button>
+
+      <button class="main__button main__button--primary">5</button>
+
+      <button class="main__button main__button--primary">6</button>
+
+      <button class="main__button main__button--primary">7</button>
+
+      <button class="main__button main__button--primary">8</button>
+
+      <button class="main__button main__button--primary">9</button>
+
+      <button class="main__button main__button--primary">0</button>
+
+      <button class="main__button main__button--primary" id="point" aria-label="point">.</button>
+
+      <button class="main__button main__button--secondary" id="equals">=</button>
+
+      <button class="main__button main__button--operator">+</button>
+
+      <button class="main__button main__button--operator" aria-label="minus">-</button>
+
+      <button class="main__button main__button--operator" aria-label="times">x</button>
+
+      <button class="main__button main__button--operator" aria-label="divide">/</button>
+
+      <button class="main__button main__button--operator" aria-label="exponent">^</button>
+
+      <button class="main__button main__button--operator" id="root">√</button>
+
+      <button class="main__button main__button--delete" id="clear">AC</button>
+
+      <button class="main__button main__button--delete" id="clear-entry">CE</button>
+    </main>
+  </container>
+
+  <script src="script/test-script.js"></script>
+</body>
+
+</html>
