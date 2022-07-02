@@ -1,8 +1,7 @@
 //query selectors
 //for display areas
-const xValueBox = document.querySelector("#x");
-const yValueBox = document.querySelector("#y");
-const inputOutputBox = document.querySelector("#io");
+const secondaryDisplay = document.querySelector(".secondary-display__value");
+const primaryDisplay = document.querySelector(".primary-display__value");
 
 //for buttons
 const numbers = document.querySelectorAll(".main__button--primary");
@@ -14,10 +13,14 @@ const clear = document.querySelector("#clear");
 const clearEntry = document.querySelector("#clear-entry");
 
 // pure funcs
-const appendInnerHTML = (firstDomElement, secondDomElement) => {
-  firstDomElement.id === "root"
-    ? (secondDomElement.innerHTML = `√${secondDomElement.innerHTML}`)
-    : (secondDomElement.innerHTML += firstDomElement.innerHTML);
+const appendInnerHTML = (
+  firstDomElement,
+  secondDomElement,
+  equalsOperation = false,
+) => {
+  secondDomElement.innerHTML += equalsOperation
+    ? ` ${firstDomElement.innerHTML}`
+    : firstDomElement.innerHTML;
 };
 
 const clearInnerHTML = (domElement) => (domElement.innerHTML = "");
@@ -42,9 +45,6 @@ const moveValue = (
   startDomElement,
   operatorInnerHTML = "",
 ) => {
-  console.log("targetDomElement", targetDomElement);
-  console.log("startDomElement", startDomElement);
-  console.log("operatorinner", operatorInnerHTML);
   targetDomElement.innerHTML = operatorInnerHTML
     ? `${startDomElement.innerHTML} ${operatorInnerHTML}`
     : startDomElement.innerHTML;
@@ -78,10 +78,13 @@ const performCalculation = (xDomElementContent, yDomElementContent) => {
 };
 
 const findSquareRoot = (domElement) => {
-  number = Number(domElement.innerHTML.substring(1));
-  console.log("number", number);
-  console.log("root", Math.pow(number, 0.5));
-  return Math.pow(number, 0.5);
+  if (domElement.innerHTML[0] === "-") {
+    const number = Number(domElement.innerHTML.substring(2));
+    return `-${Math.pow(number, 0.5)}`;
+  } else {
+    const number = Number(domElement.innerHTML.substring(1));
+    return Math.pow(number, 0.5).toString();
+  }
 };
 
 const displayResult = (displayLocation, result, operatorInnerHTML = "") => {
@@ -90,138 +93,174 @@ const displayResult = (displayLocation, result, operatorInnerHTML = "") => {
     : result;
 };
 
-// other funcs
-const unsuitableContent = () => {
-  return inputOutputBox.innerHTML[inputOutputBox.innerHTML.length - 1] ===
-    "." || inputOutputBox.innerHTML === "-"
+const equalsOperationPerformed = (domElement) => {
+  const lastChar = domElement.innerHTML[domElement.innerHTML.length - 1];
+  if (lastChar === "0" || Number(lastChar)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const hasUnsuitableContent = (domElement) => {
+  return domElement.innerHTML[domElement.innerHTML.length - 1] === "." ||
+    domElement.innerHTML === "-" ||
+    domElement.innerHTML === "√"
     ? true
     : false;
 };
 
-const findDisplayElementsWithContent = () => {
-  const displayElementsWithContent = findElementsWithContent([
-    inputOutputBox,
-    xValueBox,
-    yValueBox,
-  ]);
-  if (displayElementsWithContent.length === 3) {
-    return "all";
-  } else if (!displayElementsWithContent.length) {
-    return "none";
-  } else return displayElementsWithContent;
+const hasError = (result) => {
+  if (!isFinite(result)) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 // handler funcs
-const handleAppendHTMLToInputOutputBox = (e) =>
-  appendInnerHTML(e.target, inputOutputBox);
+const handleAppendHTMLToPrimaryDisplay = (e) =>
+  appendInnerHTML(e.target, primaryDisplay);
 
 const handleClearAll = () => {
-  clearInnerHTML(inputOutputBox);
-  clearInnerHTML(xValueBox);
-  clearInnerHTML(yValueBox);
+  clearInnerHTML(primaryDisplay);
+  clearInnerHTML(secondaryDisplay);
 };
 
-const handleClearOneCharFromInputOutputBox = (e) => {
-  if (findDisplayElementsWithContent() !== "all") {
-    clearOneChar(inputOutputBox);
+const handleClearOneCharFromPrimaryDisplay = () => {
+  if (!equalsOperationPerformed(secondaryDisplay)) {
+    clearOneChar(primaryDisplay);
   }
 };
 
 const handleNum = (e) => {
-  if (findDisplayElementsWithContent() === "all") {
+  if (equalsOperationPerformed(secondaryDisplay)) {
     handleClearAll();
-  } else if (inputOutputBox.innerHTML === "0") {
-    clearInnerHTML(inputOutputBox);
-  } else if (inputOutputBox.innerHTML === "-0") {
-    clearOneChar(inputOutputBox);
+  } else if (primaryDisplay.innerHTML === "0") {
+    clearInnerHTML(primaryDisplay);
+  } else if (
+    primaryDisplay.innerHTML === "-0" ||
+    primaryDisplay.innerHTML.substring(-2) === "√0"
+  ) {
+    clearOneChar(primaryDisplay);
   }
-  handleAppendHTMLToInputOutputBox(e);
+  handleAppendHTMLToPrimaryDisplay(e);
 };
 
 const handlePoint = (e) => {
-  if (findDisplayElementsWithContent() === "all") {
+  if (equalsOperationPerformed(secondaryDisplay)) {
     handleClearAll();
-  } else if (unsuitableContent() || inputOutputBox.innerHTML.includes(".")) {
+    handleAppendHTMLToPrimaryDisplay(e);
+  } else if (
+    hasUnsuitableContent(primaryDisplay) ||
+    primaryDisplay.innerHTML.includes(".")
+  ) {
     return;
   } else {
-    handleAppendHTMLToInputOutputBox(e);
+    handleAppendHTMLToPrimaryDisplay(e);
   }
 };
 
 const handleEquals = (e) => {
+  const elementsWithContent = findElementsWithContent([
+    primaryDisplay,
+    secondaryDisplay,
+  ]);
   if (
-    findDisplayElementsWithContent() === "all" ||
-    unsuitableContent() ||
-    findDisplayElementsWithContent().toString() === "x"
+    equalsOperationPerformed(secondaryDisplay) ||
+    hasUnsuitableContent(primaryDisplay) ||
+    elementsWithContent.toString() === "sd" ||
+    !elementsWithContent.length
   ) {
     return;
-  } else if (findDisplayElementsWithContent().toString() === "io") {
-    if (inputOutputBox.innerHTML.includes("√")) {
-      const squareRoot = findSquareRoot(inputOutputBox);
-      inputOutputBox.innerHTML = squareRoot.toString();
+  } else if (elementsWithContent.toString() === "pd") {
+    if (primaryDisplay.innerHTML.includes("√")) {
+      const squareRoot = findSquareRoot(primaryDisplay);
+      appendInnerHTML(primaryDisplay, secondaryDisplay);
+      primaryDisplay.innerHTML = squareRoot;
     } else {
       return;
     }
   } else {
-    if (inputOutputBox.innerHTML.includes("√")) {
-      const squareRoot = findSquareRoot(inputOutputBox);
-      inputOutputBox.innerHTML = squareRoot.toString();
+    if (primaryDisplay.innerHTML.includes("√")) {
+      const squareRoot = findSquareRoot(primaryDisplay);
+      primaryDisplay.innerHTML = squareRoot;
     }
     const result = performCalculation(
-      xValueBox.innerHTML,
-      inputOutputBox.innerHTML,
+      secondaryDisplay.innerHTML,
+      primaryDisplay.innerHTML,
     );
-    moveValue(yValueBox, inputOutputBox);
-    displayResult(inputOutputBox, result);
+    appendInnerHTML(primaryDisplay, secondaryDisplay, true);
+    if (!hasError(result)) {
+      displayResult(primaryDisplay, result);
+    } else {
+      primaryDisplay.innerHTML = "NaN";
+    }
   }
 };
 
 const handleOperator = (e) => {
-  if (
-    findDisplayElementsWithContent() === "none" ||
-    findDisplayElementsWithContent().toString() === "x"
-  ) {
-    if (e.target.innerHTML === "-") {
-      handleAppendHTMLToInputOutputBox(e);
-    } else {
-      return;
-    }
-  } else if (unsuitableContent()) {
+  if (primaryDisplay.innerHTML === "NaN") {
     return;
-  } else if (
-    findDisplayElementsWithContent() === "all" ||
-    findDisplayElementsWithContent().toString() === "io"
-  ) {
-    if (inputOutputBox.innerHTML.includes("√")) {
-      const squareRoot = findSquareRoot(inputOutputBox);
-      inputOutputBox.innerHTML = squareRoot.toString();
-    }
-    moveValue(xValueBox, inputOutputBox, e.target.innerHTML);
-    clearInnerHTML(yValueBox);
   } else {
-    if (inputOutputBox.innerHTML.includes("√")) {
-      const squareRoot = findSquareRoot(inputOutputBox);
-      const result = performCalculation(xValueBox.innerHTML, squareRoot);
-      displayResult(xValueBox, result, e.target.innerHTML);
+    const elementsWithContent = findElementsWithContent([
+      primaryDisplay,
+      secondaryDisplay,
+    ]);
+    if (
+      !elementsWithContent.length ||
+      elementsWithContent.toString() === "sd"
+    ) {
+      if (e.target.innerHTML === "-") {
+        handleAppendHTMLToPrimaryDisplay(e);
+      } else {
+        return;
+      }
+    } else if (hasUnsuitableContent(primaryDisplay)) {
+      return;
+    } else if (
+      equalsOperationPerformed(secondaryDisplay) ||
+      elementsWithContent.toString() === "pd"
+    ) {
+      if (primaryDisplay.innerHTML.includes("√")) {
+        const squareRoot = findSquareRoot(primaryDisplay);
+        primaryDisplay.innerHTML = squareRoot.toString();
+      }
+      moveValue(secondaryDisplay, primaryDisplay, e.target.innerHTML);
+    } else if (primaryDisplay.innerHTML.includes("√")) {
+      const squareRoot = findSquareRoot(primaryDisplay);
+      const result = performCalculation(secondaryDisplay.innerHTML, squareRoot);
+      if (!hasError(result)) {
+        displayResult(secondaryDisplay, result, e.target.innerHTML);
+        clearInnerHTML(primaryDisplay);
+      } else {
+        primaryDisplay.innerHTML = squareRoot;
+        appendInnerHTML(primaryDisplay, secondaryDisplay, true);
+        primaryDisplay.innerHTML = "NaN";
+      }
     } else {
       const result = performCalculation(
-        xValueBox.innerHTML,
-        inputOutputBox.innerHTML,
+        secondaryDisplay.innerHTML,
+        primaryDisplay.innerHTML,
       );
-      displayResult(xValueBox, result, e.target.innerHTML);
+      if (!hasError(result)) {
+        displayResult(secondaryDisplay, result, e.target.innerHTML);
+        clearInnerHTML(primaryDisplay);
+      } else {
+        appendInnerHTML(primaryDisplay, secondaryDisplay, true);
+        primaryDisplay.innerHTML = "NaN";
+      }
     }
-    clearInnerHTML(inputOutputBox);
   }
 };
 
 const handleRoot = (e) => {
-  if (unsuitableContent() || inputOutputBox.innerHTML.includes("√")) {
+  if (equalsOperationPerformed(secondaryDisplay)) {
+    handleClearAll();
+  } else if (primaryDisplay.innerHTML && primaryDisplay.innerHTML !== "-") {
     return;
-  } else if (findDisplayElementsWithContent() === "all") {
-    clearInnerHTML(xValueBox);
-    clearInnerHTML(yValueBox);
   }
-  handleAppendHTMLToInputOutputBox(e);
+  handleAppendHTMLToPrimaryDisplay(e);
 };
 
 //event listeners
@@ -245,4 +284,4 @@ root.addEventListener("click", handleRoot);
 
 clear.addEventListener("click", handleClearAll);
 
-clearEntry.addEventListener("click", handleClearOneCharFromInputOutputBox);
+clearEntry.addEventListener("click", handleClearOneCharFromPrimaryDisplay);

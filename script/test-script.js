@@ -13,10 +13,14 @@ const clear = document.querySelector("#clear");
 const clearEntry = document.querySelector("#clear-entry");
 
 // pure funcs
-const appendInnerHTML = (firstDomElement, secondDomElement) => {
-  firstDomElement.id === "root"
-    ? (secondDomElement.innerHTML = `√${secondDomElement.innerHTML}`)
-    : (secondDomElement.innerHTML += firstDomElement.innerHTML);
+const appendInnerHTML = (
+  firstDomElement,
+  secondDomElement,
+  equalsOperation = false,
+) => {
+  secondDomElement.innerHTML += equalsOperation
+    ? ` ${firstDomElement.innerHTML}`
+    : firstDomElement.innerHTML;
 };
 
 const clearInnerHTML = (domElement) => (domElement.innerHTML = "");
@@ -74,8 +78,13 @@ const performCalculation = (xDomElementContent, yDomElementContent) => {
 };
 
 const findSquareRoot = (domElement) => {
-  number = Number(domElement.innerHTML.substring(1));
-  return Math.pow(number, 0.5);
+  if (domElement.innerHTML[0] === "-") {
+    const number = Number(domElement.innerHTML.substring(2));
+    return `-${Math.pow(number, 0.5)}`;
+  } else {
+    const number = Number(domElement.innerHTML.substring(1));
+    return Math.pow(number, 0.5).toString();
+  }
 };
 
 const displayResult = (displayLocation, result, operatorInnerHTML = "") => {
@@ -84,9 +93,8 @@ const displayResult = (displayLocation, result, operatorInnerHTML = "") => {
     : result;
 };
 
-const equalsOperationPerformed = (displayElement) => {
-  const lastChar =
-    displayElement.innerHTML[displayElement.innerHTML.length - 1];
+const equalsOperationPerformed = (domElement) => {
+  const lastChar = domElement.innerHTML[domElement.innerHTML.length - 1];
   if (lastChar === "0" || Number(lastChar)) {
     return true;
   } else {
@@ -94,13 +102,20 @@ const equalsOperationPerformed = (displayElement) => {
   }
 };
 
-const hasUnsuitableContent = (displayElement) => {
-  return displayElement.innerHTML[displayElement.innerHTML.length - 1] ===
-    "." ||
-    displayElement.innerHTML === "-" ||
-    displayElement.innerHTML === "√"
+const hasUnsuitableContent = (domElement) => {
+  return domElement.innerHTML[domElement.innerHTML.length - 1] === "." ||
+    domElement.innerHTML === "-" ||
+    domElement.innerHTML === "√"
     ? true
     : false;
+};
+
+const hasError = (result) => {
+  if (!isFinite(result)) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 // handler funcs
@@ -112,7 +127,7 @@ const handleClearAll = () => {
   clearInnerHTML(secondaryDisplay);
 };
 
-const handleClearOneCharFromPrimaryDisplay = (e) => {
+const handleClearOneCharFromPrimaryDisplay = () => {
   if (!equalsOperationPerformed(secondaryDisplay)) {
     clearOneChar(primaryDisplay);
   }
@@ -123,7 +138,10 @@ const handleNum = (e) => {
     handleClearAll();
   } else if (primaryDisplay.innerHTML === "0") {
     clearInnerHTML(primaryDisplay);
-  } else if (primaryDisplay.innerHTML === "-0") {
+  } else if (
+    primaryDisplay.innerHTML === "-0" ||
+    primaryDisplay.innerHTML.substring(-2) === "√0"
+  ) {
     clearOneChar(primaryDisplay);
   }
   handleAppendHTMLToPrimaryDisplay(e);
@@ -159,71 +177,87 @@ const handleEquals = (e) => {
     if (primaryDisplay.innerHTML.includes("√")) {
       const squareRoot = findSquareRoot(primaryDisplay);
       appendInnerHTML(primaryDisplay, secondaryDisplay);
-      primaryDisplay.innerHTML = squareRoot.toString();
+      primaryDisplay.innerHTML = squareRoot;
     } else {
       return;
     }
   } else {
     if (primaryDisplay.innerHTML.includes("√")) {
       const squareRoot = findSquareRoot(primaryDisplay);
-      primaryDisplay.innerHTML = squareRoot.toString();
+      primaryDisplay.innerHTML = squareRoot;
     }
     const result = performCalculation(
       secondaryDisplay.innerHTML,
       primaryDisplay.innerHTML,
     );
-    primaryDisplay.innerHTML = ` ${primaryDisplay.innerHTML}`;
-    appendInnerHTML(primaryDisplay, secondaryDisplay);
-    displayResult(primaryDisplay, result);
+    appendInnerHTML(primaryDisplay, secondaryDisplay, true);
+    if (!hasError(result)) {
+      displayResult(primaryDisplay, result);
+    } else {
+      primaryDisplay.innerHTML = "NaN";
+    }
   }
 };
 
 const handleOperator = (e) => {
-  const elementsWithContent = findElementsWithContent([
-    primaryDisplay,
-    secondaryDisplay,
-  ]);
-  if (!elementsWithContent.length || elementsWithContent.toString() === "sd") {
-    if (e.target.innerHTML === "-") {
-      handleAppendHTMLToPrimaryDisplay(e);
-    } else {
-      return;
-    }
-  } else if (hasUnsuitableContent(primaryDisplay)) {
+  if (primaryDisplay.innerHTML === "NaN") {
     return;
-  } else if (
-    equalsOperationPerformed(secondaryDisplay) ||
-    elementsWithContent.toString() === "pd"
-  ) {
-    if (primaryDisplay.innerHTML.includes("√")) {
-      const squareRoot = findSquareRoot(primaryDisplay);
-      primaryDisplay.innerHTML = squareRoot.toString();
-    }
-    moveValue(secondaryDisplay, primaryDisplay, e.target.innerHTML);
   } else {
-    if (primaryDisplay.innerHTML.includes("√")) {
+    const elementsWithContent = findElementsWithContent([
+      primaryDisplay,
+      secondaryDisplay,
+    ]);
+    if (
+      !elementsWithContent.length ||
+      elementsWithContent.toString() === "sd"
+    ) {
+      if (e.target.innerHTML === "-") {
+        handleAppendHTMLToPrimaryDisplay(e);
+      } else {
+        return;
+      }
+    } else if (hasUnsuitableContent(primaryDisplay)) {
+      return;
+    } else if (
+      equalsOperationPerformed(secondaryDisplay) ||
+      elementsWithContent.toString() === "pd"
+    ) {
+      if (primaryDisplay.innerHTML.includes("√")) {
+        const squareRoot = findSquareRoot(primaryDisplay);
+        primaryDisplay.innerHTML = squareRoot.toString();
+      }
+      moveValue(secondaryDisplay, primaryDisplay, e.target.innerHTML);
+    } else if (primaryDisplay.innerHTML.includes("√")) {
       const squareRoot = findSquareRoot(primaryDisplay);
       const result = performCalculation(secondaryDisplay.innerHTML, squareRoot);
-      displayResult(secondaryDisplay, result, e.target.innerHTML);
+      if (!hasError(result)) {
+        displayResult(secondaryDisplay, result, e.target.innerHTML);
+      } else {
+        primaryDisplay.innerHTML = squareRoot;
+        appendInnerHTML(primaryDisplay, secondaryDisplay, true);
+        primaryDisplay.innerHTML = "NaN";
+      }
     } else {
       const result = performCalculation(
         secondaryDisplay.innerHTML,
         primaryDisplay.innerHTML,
       );
-      displayResult(secondaryDisplay, result, e.target.innerHTML);
+      if (!hasError(result)) {
+        displayResult(secondaryDisplay, result, e.target.innerHTML);
+        clearInnerHTML(primaryDisplay);
+      } else {
+        appendInnerHTML(primaryDisplay, secondaryDisplay, true);
+        primaryDisplay.innerHTML = "NaN";
+      }
     }
-    clearInnerHTML(primaryDisplay);
   }
 };
 
 const handleRoot = (e) => {
-  if (
-    hasUnsuitableContent(primaryDisplay) ||
-    primaryDisplay.innerHTML.includes("√")
-  ) {
+  if (equalsOperationPerformed(secondaryDisplay)) {
+    handleClearAll();
+  } else if (primaryDisplay.innerHTML && primaryDisplay.innerHTML !== "-") {
     return;
-  } else if (equalsOperationPerformed(secondaryDisplay)) {
-    clearInnerHTML(secondaryDisplay);
   }
   handleAppendHTMLToPrimaryDisplay(e);
 };
