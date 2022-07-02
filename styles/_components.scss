@@ -1,68 +1,14 @@
 @use "./variables" as *;
 
 .main__button {
-  font: $font-buttons;
-  font-weight: 600;
-  background-color: inherit;
-  border-radius: 50%;
-  width: 2.8rem;
-  height: 2.8rem;
-  color: $color-primary;
-  font-size: 1rem;
-  transition: all 0.3s ease-in-out;
-
-  &:focus {
-    outline: none;
-  }
-
-  @media screen and (min-width: 425px) {
-    width: 3.1rem;
-    height: 3.1rem;
-    font-size: 1.4rem;
-  }
-  @media screen and (min-width: 768px) {
-    width: 3.3rem;
-    height: 3.3rem;
-    font-size: 1.6rem;
-  }
-  &--primary {
-    border: 0.1rem solid $button-color-primary;
-    &:hover {
-      background-color: $button-color-primary;
-    }
-    &:active,
-    &:focus {
-      box-shadow: 0 0 0.2rem 0.2rem $button-color-primary;
-    }
-  }
+  @include button;
   &--secondary {
-    border: 0.1rem solid $button-color-secondary;
-    &:hover {
-      background-color: $button-color-secondary;
-    }
-    &:active,
-    &:focus {
-      box-shadow: 0 0 0.2rem 0.2rem $button-color-secondary;
-    }
+    @include button($button-color-secondary);
   }
   &--operator {
-    border: 0.1rem solid $button-color-operator;
-    &:hover {
-      background-color: $button-color-operator;
-    }
-    &:active,
-    &:focus {
-      box-shadow: 0 0 0.2rem 0.2rem $button-color-operator;
-    }
+    @include button($button-color-operator);
   }
   &--delete {
-    border: 0.1rem solid $button-color-delete;
-    &:hover {
-      background-color: $button-color-delete;
-    }
-    &:active,
-    &:focus {
-      box-shadow: 0 0 0.2rem 0.2rem $button-color-delete;
-    }
+    @include button($button-color-delete);
   }
 }

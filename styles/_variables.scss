@@ -1,6 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Arima:wght@300&family=Inter:wght@400;500;600&display=swap");
-
-//remove font weights from above if not using
+@import url("https://fonts.googleapis.com/css2?family=Arima:wght@300&family=Inter:wght@600&display=swap");
 
 $font-buttons: "Inter", sans-serif;
 $font-numbers: "Arima", cursive;
@@ -13,3 +11,60 @@ $button-color-operator: #5c5b5b;
 $button-color-delete: rgb(198, 59, 59);
 
 $color-primary: #ffffff;
+
+@mixin display-element(
+  $font-size-s,
+  $font-size-m,
+  $font-size-l,
+  $margin-right
+) {
+  text-align: right;
+  font-size: $font-size-s;
+  margin-right: $margin-right;
+  margin-left: 1rem;
+  overflow-x: scroll;
+  white-space: nowrap;
+  scrollbar-width: none;
+  @media screen and (min-width: 425px) {
+    font-size: $font-size-m;
+  }
+  @media screen and (min-width: 768px) {
+    font-size: $font-size-l;
+  }
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin button($color: $button-color-primary) {
+  font: $font-buttons;
+  font-weight: 600;
+  background-color: inherit;
+  border-radius: 50%;
+  width: 2.8rem;
+  height: 2.8rem;
+  color: $color-primary;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
+  border: 0.1rem solid $color;
+  @media screen and (min-width: 425px) {
+    width: 3.1rem;
+    height: 3.1rem;
+    font-size: 1.4rem;
+  }
+  @media screen and (min-width: 768px) {
+    width: 3.3rem;
+    height: 3.3rem;
+    font-size: 1.6rem;
+  }
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    background-color: $color;
+  }
+  &:active,
+  &:focus {
+    box-shadow: 0 0 0.2rem 0.2rem $color;
+  }
+}

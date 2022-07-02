@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Arima:wght@300&family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Arima:wght@300&family=Inter:wght@600&display=swap");
 .main__button {
   font: "Inter", sans-serif;
   font-weight: 600;
@@ -9,9 +9,7 @@
   color: #ffffff;
   font-size: 1rem;
   transition: all 0.3s ease-in-out;
-}
-.main__button:focus {
-  outline: none;
+  border: 0.1rem solid rgb(99, 99, 206);
 }
 @media screen and (min-width: 425px) {
   .main__button {
@@ -27,17 +25,43 @@
     font-size: 1.6rem;
   }
 }
-.main__button--primary {
-  border: 0.1rem solid rgb(99, 99, 206);
+.main__button:focus {
+  outline: none;
 }
-.main__button--primary:hover {
+.main__button:hover {
   background-color: rgb(99, 99, 206);
 }
-.main__button--primary:active, .main__button--primary:focus {
+.main__button:active, .main__button:focus {
   box-shadow: 0 0 0.2rem 0.2rem rgb(99, 99, 206);
 }
 .main__button--secondary {
+  font: "Inter", sans-serif;
+  font-weight: 600;
+  background-color: inherit;
+  border-radius: 50%;
+  width: 2.8rem;
+  height: 2.8rem;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
   border: 0.1rem solid rgb(53, 181, 53);
+}
+@media screen and (min-width: 425px) {
+  .main__button--secondary {
+    width: 3.1rem;
+    height: 3.1rem;
+    font-size: 1.4rem;
+  }
+}
+@media screen and (min-width: 768px) {
+  .main__button--secondary {
+    width: 3.3rem;
+    height: 3.3rem;
+    font-size: 1.6rem;
+  }
+}
+.main__button--secondary:focus {
+  outline: none;
 }
 .main__button--secondary:hover {
   background-color: rgb(53, 181, 53);
@@ -46,7 +70,33 @@
   box-shadow: 0 0 0.2rem 0.2rem rgb(53, 181, 53);
 }
 .main__button--operator {
+  font: "Inter", sans-serif;
+  font-weight: 600;
+  background-color: inherit;
+  border-radius: 50%;
+  width: 2.8rem;
+  height: 2.8rem;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
   border: 0.1rem solid #5c5b5b;
+}
+@media screen and (min-width: 425px) {
+  .main__button--operator {
+    width: 3.1rem;
+    height: 3.1rem;
+    font-size: 1.4rem;
+  }
+}
+@media screen and (min-width: 768px) {
+  .main__button--operator {
+    width: 3.3rem;
+    height: 3.3rem;
+    font-size: 1.6rem;
+  }
+}
+.main__button--operator:focus {
+  outline: none;
 }
 .main__button--operator:hover {
   background-color: #5c5b5b;
@@ -55,7 +105,33 @@
   box-shadow: 0 0 0.2rem 0.2rem #5c5b5b;
 }
 .main__button--delete {
+  font: "Inter", sans-serif;
+  font-weight: 600;
+  background-color: inherit;
+  border-radius: 50%;
+  width: 2.8rem;
+  height: 2.8rem;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
   border: 0.1rem solid rgb(198, 59, 59);
+}
+@media screen and (min-width: 425px) {
+  .main__button--delete {
+    width: 3.1rem;
+    height: 3.1rem;
+    font-size: 1.4rem;
+  }
+}
+@media screen and (min-width: 768px) {
+  .main__button--delete {
+    width: 3.3rem;
+    height: 3.3rem;
+    font-size: 1.6rem;
+  }
+}
+.main__button--delete:focus {
+  outline: none;
 }
 .main__button--delete:hover {
   background-color: rgb(198, 59, 59);
@@ -99,15 +175,13 @@
   align-items: end;
 }
 .outer-container .inner-container .header .secondary-display {
+  text-align: right;
   font-size: 1.2rem;
   margin-right: 1.5rem;
-  text-align: right;
+  margin-left: 1rem;
   overflow-x: scroll;
   white-space: nowrap;
   scrollbar-width: none;
-}
-.outer-container .inner-container .header .secondary-display::-webkit-scrollbar {
-  display: none;
 }
 @media screen and (min-width: 425px) {
   .outer-container .inner-container .header .secondary-display {
@@ -119,6 +193,9 @@
     font-size: 1.5rem;
   }
 }
+.outer-container .inner-container .header .secondary-display::-webkit-scrollbar {
+  display: none;
+}
 .outer-container .inner-container .header .secondary-display p {
   max-height: 2rem;
 }
@@ -128,6 +205,7 @@
   margin-right: 1rem;
   margin-left: 1rem;
   overflow-x: scroll;
+  white-space: nowrap;
   scrollbar-width: none;
 }
 @media screen and (min-width: 425px) {

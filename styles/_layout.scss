@@ -31,41 +31,13 @@
       grid-template-rows: 40% 60%;
       align-items: end;
       .secondary-display {
-        font-size: 1.2rem;
-        margin-right: 1.5rem;
-        text-align: right;
-        overflow-x: scroll;
-        white-space: nowrap;
-        scrollbar-width: none;
-        &::-webkit-scrollbar {
-          display: none;
-        }
-        @media screen and (min-width: 425px) {
-          font-size: 1.3rem;
-        }
-        @media screen and (min-width: 768px) {
-          font-size: 1.5rem;
-        }
+        @include display-element(1.2rem, 1.3rem, 1.5rem, 1.5rem);
         p {
           max-height: 2rem;
         }
       }
       .primary-display {
-        text-align: right;
-        font-size: 3.6rem;
-        margin-right: 1rem;
-        margin-left: 1rem;
-        overflow-x: scroll;
-        scrollbar-width: none;
-        @media screen and (min-width: 425px) {
-          font-size: 3.8rem;
-        }
-        @media screen and (min-width: 768px) {
-          font-size: 4rem;
-        }
-        &::-webkit-scrollbar {
-          display: none;
-        }
+        @include display-element(3.6rem, 3.8rem, 4rem, 1rem);
       }
     }
     .main {
