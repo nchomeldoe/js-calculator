@@ -8,6 +8,7 @@ const numbers = document.querySelectorAll(".main__button--primary");
 const point = document.querySelector("#point");
 const equals = document.querySelector("#equals");
 const operators = document.querySelectorAll(".main__button--operator");
+const minus = document.querySelector("#minus");
 const root = document.querySelector("#root");
 const clear = document.querySelector("#clear");
 const clearEntry = document.querySelector("#clear-entry");
@@ -275,6 +276,23 @@ const handleSimpleOperator = (e) => {
   }
 };
 
+// if minus is clicked, do nothing if the content of the primary display is unsuitable. If primary display says NaN, clear everything and display minus in the primary display. If primary display is empty, display minus in primary display. In all other cases, apply the handleAllOperators Except Root funnction above.
+const handleMinus = (e) => {
+  if (hasUnsuitableContent(primaryDisplay)) {
+    return;
+  } else if (primaryDisplay.innerHTML === "NaN") {
+    handleClearAll();
+    handleAppendHTMLToPrimaryDisplay(e);
+  } else if (
+    !findDisplayElementsWithContent().length ||
+    findDisplayElementsWithContent().toString() === "sd"
+  ) {
+    handleAppendHTMLToPrimaryDisplay(e);
+  } else {
+    handleAllOperatorsExceptRoot(e);
+  }
+};
+
 //if root is clicked, add it to primary display after clearing everything if a full operation has already been performed. Don't add it if there is already anything in the primary display except a minus
 const handleRoot = (e) => {
   if (equalsOperationPerformed(secondaryDisplay)) {
@@ -301,6 +319,8 @@ operators.forEach((operator) => {
     operator.addEventListener("click", handleSimpleOperator);
   }
 });
+
+minus.addEventListener("click", handleMinus);
 
 root.addEventListener("click", handleRoot);
 
