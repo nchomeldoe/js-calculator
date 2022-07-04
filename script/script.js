@@ -13,6 +13,8 @@ const clear = document.querySelector("#clear");
 const clearEntry = document.querySelector("#clear-entry");
 
 // pure funcs
+
+// add content to the existing content of a dom element
 const appendInnerHTML = (
   firstDomElement,
   secondDomElement,
@@ -23,13 +25,16 @@ const appendInnerHTML = (
     : firstDomElement.innerHTML;
 };
 
+// clear a dom element
 const clearInnerHTML = (domElement) => (domElement.innerHTML = "");
 
+// delete last character in a dom element
 const clearOneChar = (domElement) => {
   const content = domElement.innerHTML;
   domElement.innerHTML = content.substring(0, content.length - 1);
 };
 
+// identify which of a set of dom elements have content in them
 const findElementsWithContent = (domElementsArr) => {
   const elementsWithContent = [];
   domElementsArr.forEach((domElement) => {
@@ -40,6 +45,7 @@ const findElementsWithContent = (domElementsArr) => {
   return elementsWithContent;
 };
 
+//move a value from one dom element to another and add an operator if necessary
 const moveValue = (
   targetDomElement,
   startDomElement,
@@ -51,6 +57,7 @@ const moveValue = (
   clearInnerHTML(startDomElement);
 };
 
+// perform a claculation
 const performCalculation = (xDomElementContent, yDomElementContent) => {
   const xAndOperator = xDomElementContent.split(" ");
   const xValue = Number(xAndOperator[0]);
@@ -77,22 +84,25 @@ const performCalculation = (xDomElementContent, yDomElementContent) => {
   }
 };
 
+// perform a square root operation
 const findSquareRoot = (domElement) => {
   if (domElement.innerHTML[0] === "-") {
     const number = Number(domElement.innerHTML.substring(2));
-    return `-${Math.pow(number, 0.5)}`;
+    return `-${Math.pow(number, 0.5).toString()}`;
   } else {
     const number = Number(domElement.innerHTML.substring(1));
     return Math.pow(number, 0.5).toString();
   }
 };
 
+// display the calculation result with operator if necessary
 const displayResult = (displayLocation, result, operatorInnerHTML = "") => {
   displayLocation.innerHTML = operatorInnerHTML
     ? `${result} ${operatorInnerHTML}`
     : result;
 };
 
+// identify whether or not the equals button has been pressed (i.e. whether the whole calculation is displayed in the secondary display)
 const equalsOperationPerformed = (domElement) => {
   const lastChar = domElement.innerHTML[domElement.innerHTML.length - 1];
   if (lastChar === "0" || Number(lastChar)) {
@@ -102,6 +112,7 @@ const equalsOperationPerformed = (domElement) => {
   }
 };
 
+// identify whether the dom element contains content that means another item can't be added on (e.g. to avois two consecutive points)
 const hasUnsuitableContent = (domElement) => {
   return domElement.innerHTML[domElement.innerHTML.length - 1] === "." ||
     domElement.innerHTML === "-" ||
@@ -110,6 +121,7 @@ const hasUnsuitableContent = (domElement) => {
     : false;
 };
 
+// identify whether the calculation result is NaN or infinity
 const hasError = (result) => {
   if (!isFinite(result)) {
     return true;
@@ -118,21 +130,49 @@ const hasError = (result) => {
   }
 };
 
-// handler funcs
+// handler funcs interacting with specific dom elements
+
+//identify which of the primary and secondary displays have content in them
+const findDisplayElementsWithContent = () => {
+  return findElementsWithContent([primaryDisplay, secondaryDisplay]);
+};
+
+//display square root result in primary display
+const handleDisplayRoot = () => {
+  console.log("6");
+  const squareRoot = findSquareRoot(primaryDisplay);
+  primaryDisplay.innerHTML = squareRoot;
+};
+
+//if the calc resut is NaN or infinity, display NaN in primary display and show the calculation in the secondary display, else clear primary display and show result and operator in secondary display
+const handleError = (e, result) => {
+  if (!hasError(result)) {
+    displayResult(secondaryDisplay, result, e.target.innerHTML);
+    clearInnerHTML(primaryDisplay);
+  } else {
+    appendInnerHTML(primaryDisplay, secondaryDisplay, true);
+    primaryDisplay.innerHTML = "NaN";
+  }
+};
+
+//append content to primary display
 const handleAppendHTMLToPrimaryDisplay = (e) =>
   appendInnerHTML(e.target, primaryDisplay);
 
+// clear all the displays
 const handleClearAll = () => {
   clearInnerHTML(primaryDisplay);
   clearInnerHTML(secondaryDisplay);
 };
 
+//clear last character in prmary display unless the equals button has been pressed (don't want to be able to delete result)
 const handleClearOneCharFromPrimaryDisplay = () => {
   if (!equalsOperationPerformed(secondaryDisplay)) {
     clearOneChar(primaryDisplay);
   }
 };
 
+// when number is clicked, add it to primary display after clearing everything if a full operation has already been performed, or just clearing zero if necessary
 const handleNum = (e) => {
   if (equalsOperationPerformed(secondaryDisplay)) {
     handleClearAll();
@@ -147,18 +187,17 @@ const handleNum = (e) => {
   handleAppendHTMLToPrimaryDisplay(e);
 };
 
+// if point is clicked, add it to primary display after clearing everything if a full operation has already been performed. Don't add it if there is already a point or other unsuitable content in primary display
 const handlePoint = (e) => {
   if (equalsOperationPerformed(secondaryDisplay)) {
     handleClearAll();
-    handleAppendHTMLToPrimaryDisplay(e);
   } else if (
     hasUnsuitableContent(primaryDisplay) ||
     primaryDisplay.innerHTML.includes(".")
   ) {
     return;
-  } else {
-    handleAppendHTMLToPrimaryDisplay(e);
   }
+  handleAppendHTMLToPrimaryDisplay(e);
 };
 
 const handleEquals = (e) => {
@@ -199,61 +238,44 @@ const handleEquals = (e) => {
   }
 };
 
-const handleOperator = (e) => {
-  if (primaryDisplay.innerHTML === "NaN") {
-    return;
-  } else {
-    const elementsWithContent = findElementsWithContent([
-      primaryDisplay,
-      secondaryDisplay,
-    ]);
-    if (
-      !elementsWithContent.length ||
-      elementsWithContent.toString() === "sd"
-    ) {
-      if (e.target.innerHTML === "-") {
-        handleAppendHTMLToPrimaryDisplay(e);
-      } else {
-        return;
-      }
-    } else if (hasUnsuitableContent(primaryDisplay)) {
-      return;
-    } else if (
-      equalsOperationPerformed(secondaryDisplay) ||
-      elementsWithContent.toString() === "pd"
-    ) {
-      if (primaryDisplay.innerHTML.includes("√")) {
-        const squareRoot = findSquareRoot(primaryDisplay);
-        primaryDisplay.innerHTML = squareRoot.toString();
-      }
-      moveValue(secondaryDisplay, primaryDisplay, e.target.innerHTML);
-    } else if (primaryDisplay.innerHTML.includes("√")) {
-      const squareRoot = findSquareRoot(primaryDisplay);
-      const result = performCalculation(secondaryDisplay.innerHTML, squareRoot);
-      if (!hasError(result)) {
-        displayResult(secondaryDisplay, result, e.target.innerHTML);
-        clearInnerHTML(primaryDisplay);
-      } else {
-        primaryDisplay.innerHTML = squareRoot;
-        appendInnerHTML(primaryDisplay, secondaryDisplay, true);
-        primaryDisplay.innerHTML = "NaN";
-      }
-    } else {
-      const result = performCalculation(
-        secondaryDisplay.innerHTML,
-        primaryDisplay.innerHTML,
-      );
-      if (!hasError(result)) {
-        displayResult(secondaryDisplay, result, e.target.innerHTML);
-        clearInnerHTML(primaryDisplay);
-      } else {
-        appendInnerHTML(primaryDisplay, secondaryDisplay, true);
-        primaryDisplay.innerHTML = "NaN";
-      }
+//general function that applies to all operators including minus (except root) - if complete calulation finished then move result of it up to secondary display with operator (extra complexity if it involves a root value), else perform whatever operation is stated in the secondary display and move the result and operator up there
+const handleAllOperatorsExceptRoot = (e) => {
+  if (
+    equalsOperationPerformed(secondaryDisplay) ||
+    findDisplayElementsWithContent().toString() === "pd"
+  ) {
+    if (primaryDisplay.innerHTML.includes("√")) {
+      handleDisplayRoot();
     }
+    moveValue(secondaryDisplay, primaryDisplay, e.target.innerHTML);
+  } else if (primaryDisplay.innerHTML.includes("√")) {
+    const squareRoot = findSquareRoot(primaryDisplay);
+    const result = performCalculation(secondaryDisplay.innerHTML, squareRoot);
+    handleError(e, result);
+  } else {
+    const result = performCalculation(
+      secondaryDisplay.innerHTML,
+      primaryDisplay.innerHTML,
+    );
+    handleError(e, result);
   }
 };
 
+// function for all operators except minus and root - if the priary display is empty or has unsuitable content, then the operator should not do anything. Else apply the handleAllOperatorsExceptRoot function above
+const handleSimpleOperator = (e) => {
+  if (
+    primaryDisplay.innerHTML === "NaN" ||
+    !findDisplayElementsWithContent().length ||
+    findDisplayElementsWithContent().toString() === "sd" ||
+    hasUnsuitableContent(primaryDisplay)
+  ) {
+    return;
+  } else {
+    handleAllOperatorsExceptRoot(e);
+  }
+};
+
+//if root is clicked, add it to primary display after clearing everything if a full operation has already been performed. Don't add it if there is already anything in the primary display except a minus
 const handleRoot = (e) => {
   if (equalsOperationPerformed(secondaryDisplay)) {
     handleClearAll();
@@ -275,8 +297,8 @@ point.addEventListener("click", handlePoint);
 equals.addEventListener("click", handleEquals);
 
 operators.forEach((operator) => {
-  if (operator.id !== "root") {
-    operator.addEventListener("click", handleOperator);
+  if (operator.id !== "root" && operator.id !== "minus") {
+    operator.addEventListener("click", handleSimpleOperator);
   }
 });
 
