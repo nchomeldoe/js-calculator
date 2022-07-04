@@ -201,23 +201,19 @@ const handlePoint = (e) => {
   handleAppendHTMLToPrimaryDisplay(e);
 };
 
+// if equals is clicked, nothing should happen if a complete calculation has been performed or the primary display has unsuitable content or is empty. If the primary display includes a root operator, then the root operation should be caulated and moved to the secondary display while the result is displayed in the primary display. Else if there is content only in the primary display then nothing should happen. If both the primary and secondary displays have content, the calculation should be performed (including any root operation if there is a root operator in the primary display), and the entire operation should be displayed in the secondary display while the result is displayed in the primary display.
 const handleEquals = (e) => {
-  const elementsWithContent = findElementsWithContent([
-    primaryDisplay,
-    secondaryDisplay,
-  ]);
   if (
     equalsOperationPerformed(secondaryDisplay) ||
     hasUnsuitableContent(primaryDisplay) ||
-    elementsWithContent.toString() === "sd" ||
-    !elementsWithContent.length
+    findDisplayElementsWithContent().toString() === "sd" ||
+    !findDisplayElementsWithContent().length
   ) {
     return;
-  } else if (elementsWithContent.toString() === "pd") {
+  } else if (findDisplayElementsWithContent().toString() === "pd") {
     if (primaryDisplay.innerHTML.includes("√")) {
-      const squareRoot = findSquareRoot(primaryDisplay);
       appendInnerHTML(primaryDisplay, secondaryDisplay);
-      primaryDisplay.innerHTML = squareRoot;
+      handleDisplayRoot();
     } else {
       return;
     }
