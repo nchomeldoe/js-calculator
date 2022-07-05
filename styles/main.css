@@ -162,7 +162,7 @@
     width: 22rem;
   }
 }
-.outer-container .inner-container .header {
+.outer-container .inner-container .screen {
   font-family: "Arima", cursive;
   height: 45%;
   border: 0.1rem solid #ffffff;
@@ -174,7 +174,7 @@
   grid-template-rows: 40% 60%;
   align-items: end;
 }
-.outer-container .inner-container .header .secondary-display {
+.outer-container .inner-container .screen .secondary-display {
   text-align: right;
   font-size: 1.2rem;
   margin-right: 1.5rem;
@@ -184,22 +184,22 @@
   scrollbar-width: none;
 }
 @media screen and (min-width: 425px) {
-  .outer-container .inner-container .header .secondary-display {
+  .outer-container .inner-container .screen .secondary-display {
     font-size: 1.3rem;
   }
 }
 @media screen and (min-width: 768px) {
-  .outer-container .inner-container .header .secondary-display {
+  .outer-container .inner-container .screen .secondary-display {
     font-size: 1.5rem;
   }
 }
-.outer-container .inner-container .header .secondary-display::-webkit-scrollbar {
+.outer-container .inner-container .screen .secondary-display::-webkit-scrollbar {
   display: none;
 }
-.outer-container .inner-container .header .secondary-display p {
+.outer-container .inner-container .screen .secondary-display p {
   max-height: 2rem;
 }
-.outer-container .inner-container .header .primary-display {
+.outer-container .inner-container .screen .primary-display {
   text-align: right;
   font-size: 3.6rem;
   margin-right: 1rem;
@@ -209,16 +209,16 @@
   scrollbar-width: none;
 }
 @media screen and (min-width: 425px) {
-  .outer-container .inner-container .header .primary-display {
+  .outer-container .inner-container .screen .primary-display {
     font-size: 3.8rem;
   }
 }
 @media screen and (min-width: 768px) {
-  .outer-container .inner-container .header .primary-display {
+  .outer-container .inner-container .screen .primary-display {
     font-size: 4rem;
   }
 }
-.outer-container .inner-container .header .primary-display::-webkit-scrollbar {
+.outer-container .inner-container .screen .primary-display::-webkit-scrollbar {
   display: none;
 }
 .outer-container .inner-container .main {
