@@ -6,7 +6,7 @@
   align-items: center;
 
   .inner-container {
-    width: 80vw;
+    width: 80vmin;
     min-width: 15rem;
     background-color: $background-color-primary;
     border: 0.2rem solid $background-color-primary;
@@ -14,8 +14,16 @@
     margin: 1rem auto;
     border-radius: 1rem;
     min-height: 34rem;
-    height: 80vh;
+    height: 80vmax;
     max-height: 45rem;
+    @media (orientation: landscape) {
+      display: flex;
+      flex-direction: row;
+      min-height: 20rem;
+      max-height: 90vmin;
+      min-width: 35rem;
+      max-width: 90vmax;
+    }
     @media screen and (min-width: 425px) {
       width: 22rem;
     }
@@ -30,6 +38,10 @@
       grid-template-columns: 100%;
       grid-template-rows: 40% 60%;
       align-items: end;
+      @media (orientation: landscape) {
+        height: auto;
+        width: 45%;
+      }
       .secondary-display {
         @include display-element(1.2rem, 1.3rem, 1.5rem, 1.5rem);
         p {
@@ -46,6 +58,10 @@
       place-items: center;
       grid-template-columns: 1fr 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+      @media (orientation: landscape) {
+        height: auto;
+        width: 55%;
+      }
     }
   }
 }
