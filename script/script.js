@@ -66,22 +66,16 @@ const performCalculation = (xDomElementContent, yDomElementContent) => {
   switch (xAndOperator[1]) {
     case "-":
       return xValue - yValue;
-      break;
     case "+":
       return xValue + yValue;
-      break;
     case "x":
       return xValue * yValue;
-      break;
     case "/":
       return xValue / yValue;
-      break;
     case "÷":
       return xValue / yValue;
-      break;
     case "^":
       return Math.pow(xValue, yValue);
-      break;
   }
 };
 
@@ -90,10 +84,9 @@ const findSquareRoot = (domElement) => {
   if (domElement.innerHTML[0] === "-") {
     const number = Number(domElement.innerHTML.substring(2));
     return `-${Math.pow(number, 0.5).toString()}`;
-  } else {
-    const number = Number(domElement.innerHTML.substring(1));
-    return Math.pow(number, 0.5).toString();
   }
+  const number = Number(domElement.innerHTML.substring(1));
+  return Math.pow(number, 0.5).toString();
 };
 
 // display the calculation result with operator if necessary
@@ -106,29 +99,21 @@ const displayResult = (displayLocation, result, operatorInnerHTML = "") => {
 // identify whether or not the equals button has been pressed (i.e. whether the whole calculation is displayed in the secondary display)
 const equalsOperationPerformed = (domElement) => {
   const lastChar = domElement.innerHTML[domElement.innerHTML.length - 1];
-  if (lastChar === "0" || Number(lastChar)) {
-    return true;
-  } else {
-    return false;
-  }
+  return lastChar === "0" || Number(lastChar);
 };
 
 // identify whether the dom element contains content that means another item can't be added on (e.g. to avois two consecutive points)
 const hasUnsuitableContent = (domElement) => {
-  return domElement.innerHTML[domElement.innerHTML.length - 1] === "." ||
+  return (
+    domElement.innerHTML[domElement.innerHTML.length - 1] === "." ||
     domElement.innerHTML === "-" ||
     domElement.innerHTML === "√"
-    ? true
-    : false;
+  );
 };
 
 // identify whether the calculation result is NaN or infinity
 const hasError = (result) => {
-  if (!isFinite(result)) {
-    return true;
-  } else {
-    return false;
-  }
+  return !isFinite(result);
 };
 
 // handler funcs interacting with specific dom elements
@@ -267,9 +252,8 @@ const handleSimpleOperator = (e) => {
     hasUnsuitableContent(primaryDisplay)
   ) {
     return;
-  } else {
-    handleAllOperatorsExceptRoot(e);
   }
+  handleAllOperatorsExceptRoot(e);
 };
 
 // if minus is clicked, do nothing if the content of the primary display is unsuitable. If primary display says NaN, clear everything and display minus in the primary display. If primary display is empty, display minus in primary display. In all other cases, apply the handleAllOperators Except Root funnction above.
