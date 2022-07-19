@@ -195,7 +195,8 @@ const handleEquals = (e) => {
     !findDisplayElementsWithContent().length
   ) {
     return;
-  } else if (findDisplayElementsWithContent().toString() === "pd") {
+  }
+  if (findDisplayElementsWithContent().toString() === "pd") {
     if (primaryDisplay.innerHTML.includes("√")) {
       appendInnerHTML(primaryDisplay, secondaryDisplay);
       handleDisplayRoot();
@@ -260,7 +261,8 @@ const handleSimpleOperator = (e) => {
 const handleMinus = (e) => {
   if (hasUnsuitableContent(primaryDisplay)) {
     return;
-  } else if (primaryDisplay.innerHTML === "NaN") {
+  }
+  if (primaryDisplay.innerHTML === "NaN") {
     handleClearAll();
     handleAppendHTMLToPrimaryDisplay(e);
   } else if (
